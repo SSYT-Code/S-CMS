@@ -1,0 +1,33 @@
+<?php
+	include_once('./includes/connection.php');
+	global $site_pages;
+	foreach ($SCMS_CONN->query('SELECT * FROM site_settings') as $row) {
+		$site_pages_2 = $row['site_title'];
+	}
+?>
+
+<ul>
+	<li><?=$site_pages_2;?></li>
+</ul>
+<!-- BEGIN forum_list_wrap -->
+<div id="forum_rows">
+	<?php foreach ($SCMS_CONN->query('SELECT * FROM forums') as $forum_row) { ?>
+		<table class="table" id="forum_<?=$forum_row['id']; ?>">
+			<tr>
+				<td class="row1over">
+					<h3>
+						<a href="<?=$forum_row['f_link']?><?=$forum_row['id']; ?>"><?=$forum_row['f_title']?></a>
+					</h3>
+					<?php if($forum_row['f_desc'] != "") : ?>
+						<p><?=$forum_row['f_desc'] ?></p>
+					<?php endif; ?>
+				</td>
+				<td class="row1"><?=$forum_row['f_topics']?> topics</td>
+				<td class="row1"><?=$forum_row['f_posts']?> posts</td>
+				<td class="row3over"><?=$forum_row['f_last_post']?></td>
+			</tr>
+		</table>
+		<br />
+	<?php } ?>
+</div>
+<!-- END forum_list_wrap -->
