@@ -1,4 +1,6 @@
 <?php
+	// session_start();
+	
 	function SCMSDB()
 	{
 		$dbhost = "localhost";
@@ -15,4 +17,8 @@
 			echo 'Connection failed: ' . $e->getMessage();
 		}
 	}
+	
+	include_once 'class/class.user.php';
+	$db = SCMSDB();
+	$user = new USER();
 ?>
