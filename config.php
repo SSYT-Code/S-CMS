@@ -1,7 +1,7 @@
 <?php
 	include_once('includes/connection.php');
-	// Global Variable
-
+	$db = SCMSDB();
+	
 	global $TOTAL_LOGGED;
 	global $MOST_ONLINE_USERS;
 	global $ONLINE_USERS;
@@ -15,9 +15,21 @@
 	global $LOGIN_FORM;
 	global $LOGIN_DATA;
 	global $site_pages;
+	global $error_msg;
+	global $logged_session;
+	define('SCMS_DIR', __DIR__, true);
+
+	
+	if(isset($_SESSION['uid']))
+	{
+		print_r($logged_session);
+		print_r($_SESSION['uid']);
+		$checkuser = $db->query('SELECT * FROM accounts WHERE id = '. $_SESSION['uid'] .'');
+		$userData = $checkuser->fetch(PDO::FETCH_OBJ);
+	}
 	
 	// Get site settings from DB
-	foreach ($SCMS_CONN->query('SELECT * FROM site_settings') as $row) {
+	foreach ($db->query('SELECT * FROM site_settings') as $row) {
 		
 		$site_settings = array(
 			'url' 		=> $row['site_url'],
@@ -31,16 +43,24 @@
 		$STYLE_PATH = $row['site_style'];
 	}
 	
-	define('CMS_THEME_PATH', 'style/'. $STYLE_PATH .'/template/');
-	define('CMS_STYLE_PATH', 'style/'. $STYLE_PATH .'/');
+	define('CMS_THEME_PATH', SCMS_DIR.'/style/'. $STYLE_PATH .'/template/');
+	define('CMS_STYLE_PATH', SCMS_DIR.'/style/'. $STYLE_PATH .'/');
+	
 	
 	// Get site pages from DB
-	foreach ($SCMS_CONN->query('SELECT * FROM site_pages') as $row) {
-		$site_pages .= '<li><a href="'. $row['page_url'] .'" alt="'. $row['page_title'] .'">'. $row['page_name'] .'</a></li>';
+	if(!isset($_SESSION['uid']) || $userData->logged != 1)
+	{
+		foreach ($db->query('SELECT * FROM site_pages WHERE type = 1 OR type = 2') as $row) {
+			$site_pages .= '<li><a href="'. $row['page_url'] .'" alt="'. $row['page_title'] .'">'. $row['page_name'] .'</a></li>';
+		}
+	} else {
+		foreach ($db->query('SELECT * FROM site_pages WHERE type = 1 OR type = 3') as $row) {
+			$site_pages .= '<li><a href="'. $row['page_url'] .'" alt="'. $row['page_title'] .'">'. $row['page_name'] .'</a></li>';
+		}
 	}
-	
+
 	// Get groups from BD
-	foreach ($SCMS_CONN->query('SELECT * FROM groups') as $row) {
+	foreach ($db->query('SELECT * FROM groups') as $row) {
 		$FORUM_GROUPS_LIST .= '<b><a style="'. $row['colors'] .'" href="/groups.php/?group='. $row['id'] .'">'. $row['Name'] .'</a></b> ';
 	}
 
@@ -71,21 +91,33 @@
 	
 	$FORUM_GROUPS = "Echipa: " . $FORUM_GROUPS_LIST;
 	
-	if(isset($_GET['action']))
-	{
-		if($_GET['action'] === "sign_up")
-		{
-			$REGISTER_FORM = true;
-			$REGISTER_DATA .= "<h1>Create Account</h1>";
-		}
-	}
+	$REGISTER_DATA .= '<div id="signup">
+	<h3>Registration</h3>
+	<form method="post" action="" name="signup">
+		<label>Name</label>
+		<input type="text" name="nameReg" autocomplete="off" />
+		<label>Email</label>
+		<input type="text" name="emailReg" autocomplete="off" />
+		<label>Username</label>
+		<input type="text" name="usernameReg" autocomplete="off" />
+		<label>Password</label>
+		<input type="password" name="passwordReg" autocomplete="off"/>
+		<div class="errorMsg"><?php echo $errorMsgReg; ?></div>
+		<input type="submit" class="button" name="signupSubmit" value="Signup">
+	</form>
+	</div>';
+	define('REGISTER_DATA_FORM', $REGISTER_DATA, true);
 
-	if(isset($_GET['action']))
-	{
-		if($_GET['action'] === "sign_in")
-		{
-			$LOGIN_FORM = true;
-			$LOGIN_DATA .= "<h1>Login</h1>";
-		}
-	}
+	$LOGIN_DATA .= '<div id="login">
+	<h3>Login</h3>
+	<form method="post" action="" name="login">
+		<label>Username or Email</label>
+		<input type="text" name="usernameEmail" autocomplete="off" />
+		<label>Password</label>
+		<input type="password" name="password" autocomplete="off"/>
+		<input type="submit" class="button" name="loginSubmit" value="Login">
+	</form>
+	<div class="errorMsg"><?php echo $errorMsgLogin; ?></div>
+	</div>';
+	define('LOGIN_DATA_FORM',$LOGIN_DATA,true);
 ?>

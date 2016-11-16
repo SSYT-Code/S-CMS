@@ -1,7 +1,7 @@
 <?php
 	include_once('includes/connection.php');
 	include_once('config.php');
-	
+	$db = SCMSDB();
 	
 	$site_pages_2 = $site_settings['title'];
 	$TOPIC_ID = isset($_GET['topic']) ? $_GET['topic'] : 1;
@@ -17,7 +17,7 @@
 	static $RANK;
 	static $FIELDS;
 
-	foreach ($SCMS_CONN->query('SELECT * FROM topics WHERE id =' . $TOPIC_ID) as $row) {
+	foreach ($db->query('SELECT * FROM topics WHERE id =' . $TOPIC_ID) as $row) {
 		$post_rows = array(
 			"id" => $row['id'],
 			"forum" => $row['t_forum'],
@@ -30,23 +30,23 @@
 		$AUTOR = $row['t_by'];
 		
 		$FORUM_ID = $post_rows['id'];
-		foreach ($SCMS_CONN->query('SELECT * FROM forums WHERE id = '. $FORUM_ID .' ') as $row) {
+		foreach ($db->query('SELECT * FROM forums WHERE id = '. $FORUM_ID .' ') as $row) {
 			$FORUM = $row['f_title'];
 		}
 		$TOPIC = $post_rows['title'];
 	}
 	
-	foreach ($SCMS_CONN->query('SELECT * FROM accounts WHERE id = ' . $AUTOR) as $profile) {
+	foreach ($db->query('SELECT * FROM accounts WHERE id = ' . $AUTOR) as $profile) {
 		$profile_fields = array(
 			'id' => $profile['id'],
-			'name' => $profile['nick'],
+			'name' => $profile['username'],
 			'posts' => $profile['posts']
 		);
 		
 		$AVATAR = '<img src="'.$profile['avatar'].'" />';
-		$USER = '<a href="#">'. $profile['nick'] .'</a>';
+		$USER = '<a href="#">'. $profile['username'] .'</a>';
 		
-		foreach ($SCMS_CONN->query('SELECT * FROM groups WHERE id = ' . $profile['rank']) as $rank) {
+		foreach ($db->query('SELECT * FROM groups WHERE id = ' . $profile['rank']) as $rank) {
 			$RANK = '<span style="'. $rank['colors'].'">'. $rank['Name'] .'</span>';
 		}
 

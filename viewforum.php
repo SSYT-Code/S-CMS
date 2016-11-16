@@ -1,6 +1,7 @@
 <?php
 	include_once('includes/connection.php');
 	include_once('config.php');
+	$db = SCMSDB();
 	
 	static $LINK;
 	static $FORUM;
@@ -12,7 +13,7 @@
 	
 	$LINK = isset($_GET['forum']) ? $_GET['forum'] : '';
 	
-	foreach ($SCMS_CONN->query('SELECT * FROM topics WHERE t_forum = '. $LINK .' ') as $row) {
+	foreach ($db->query('SELECT * FROM topics WHERE t_forum = '. $LINK .' ') as $row) {
 		$forum_rows = array(
 		"topic_id" => $row['id'],
 		"topic_category" => $row['t_forum'],
@@ -24,16 +25,16 @@
 		"topic_lp_date" => $row['last_date']
 		);
 		
-		foreach ($SCMS_CONN->query('SELECT * FROM accounts WHERE id = ' . $forum_rows['topic_poster']) as $row) {
-			$AUTHOR = '<a href="memberlist.php?user='. $row['nick'] .'">'. $row['nick'] .'</a>';
+		foreach ($db->query('SELECT * FROM accounts WHERE id = ' . $forum_rows['topic_poster']) as $row) {
+			$AUTHOR = '<a href="memberlist.php?user='. $row['username'] .'">'. $row['username'] .'</a>';
 		}
 		
-		foreach ($SCMS_CONN->query('SELECT * FROM accounts WHERE id = ' . $forum_rows['topic_replyes']) as $row) {
-			$AUTHOR_LP = '<a href="memberlist.php?user='. $row['nick'] .'">'. $row['nick'] .'</a>';
+		foreach ($db->query('SELECT * FROM accounts WHERE id = ' . $forum_rows['topic_replyes']) as $row) {
+			$AUTHOR_LP = '<a href="memberlist.php?user='. $row['username'] .'">'. $row['username'] .'</a>';
 		}
 	}
 	
-	foreach ($SCMS_CONN->query('SELECT * FROM forums WHERE id = '. $LINK .' ') as $row) {
+	foreach ($db->query('SELECT * FROM forums WHERE id = '. $LINK .' ') as $row) {
 		$FORUM = $row['f_title'];
 		$FORUM_DESC = $row['f_desc'];
 	}
@@ -75,7 +76,7 @@
 		</div>
 		<!-- BEGIN forum_list_wrap -->
 		<div id="forum_rows">
-			<?php foreach ($SCMS_CONN->query('SELECT * FROM topics WHERE t_forum = ' . $LINK) as $forum_row) { ?>
+			<?php foreach ($db->query('SELECT * FROM topics WHERE t_forum = ' . $LINK) as $forum_row) { ?>
 				<table class="table" id="forum_<?=$forum_row['id']; ?>">
 					<tr>
 						<td class="row1over">
