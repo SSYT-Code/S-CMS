@@ -1,7 +1,6 @@
 <?php
 	include_once('includes/connection.php');
-	$db = SCMSDB();
-	
+
 	global $TOTAL_LOGGED;
 	global $MOST_ONLINE_USERS;
 	global $ONLINE_USERS;
@@ -19,15 +18,6 @@
 	global $logged_session;
 	define('SCMS_DIR', __DIR__, true);
 
-	
-	if(isset($_SESSION['uid']))
-	{
-		print_r($logged_session);
-		print_r($_SESSION['uid']);
-		$checkuser = $db->query('SELECT * FROM accounts WHERE id = '. $_SESSION['uid'] .'');
-		$userData = $checkuser->fetch(PDO::FETCH_OBJ);
-	}
-	
 	// Get site settings from DB
 	foreach ($db->query('SELECT * FROM site_settings') as $row) {
 		
@@ -48,20 +38,23 @@
 	
 	
 	// Get site pages from DB
-	if(!isset($_SESSION['uid']) || $userData->logged != 1)
+	if(!$user->is_loggedin())
 	{
 		foreach ($db->query('SELECT * FROM site_pages WHERE type = 1 OR type = 2') as $row) {
 			$site_pages .= '<li><a href="'. $row['page_url'] .'" alt="'. $row['page_title'] .'">'. $row['page_name'] .'</a></li>';
 		}
-	} else {
+	}
+	
+	if($user->is_loggedin()) {
 		foreach ($db->query('SELECT * FROM site_pages WHERE type = 1 OR type = 3') as $row) {
 			$site_pages .= '<li><a href="'. $row['page_url'] .'" alt="'. $row['page_title'] .'">'. $row['page_name'] .'</a></li>';
 		}
 	}
 
 	// Get groups from BD
+	$FORUM_GROUPS_LIST = array();
 	foreach ($db->query('SELECT * FROM groups') as $row) {
-		$FORUM_GROUPS_LIST .= '<b><a style="'. $row['colors'] .'" href="/groups.php/?group='. $row['id'] .'">'. $row['Name'] .'</a></b> ';
+		$FORUM_GROUPS_LIST[] = '<b><a style="'. $row['colors'] .'" href="/groups.php/?group='. $row['id'] .'">'. $row['Name'] .'</a></b>';
 	}
 
 	function getUsersOnline() {
@@ -78,18 +71,31 @@
 	   return $count;
 	}
 	
-	$ONLINE = getUsersOnline(); $REG_USER = 0; $NUMAR_MTO = 1;
+	$users_array = array();
+	$logged_member = $db->query('SELECT * FROM accounts WHERE logged = 1');
+	$userData = $logged_member->fetch(PDO::FETCH_OBJ);
+	if($logged_member->rowCount() > 0)
+	{
+		$REG_USER = $logged_member->rowCount();
+		$ONLINE_USERS = $logged_member->rowCount();
+		
+		if($ONLINE_USERS != 0)
+		{
+			$users_array[] .= '<a href="/memberlist.php?user='. $userData->username .'">'. $userData->username  .'</a>';
+			$getUsers = implode(', ', $users_array);
+			$ONLINE_USERS = '<p>Utilizatori inregistrati: '. $getUsers .'</p>';
+		}
+	}
+	
+	$ONLINE = getUsersOnline(); $NUMAR_MTO = 1;
 	$TOTAL_USERS = $ONLINE + $REG_USER;
 	
+
 	$TOTAL_LOGGED = "<p>In total sunt ". $TOTAL_USERS ." utilizatori, ". $REG_USER ." inregistrati, ". $ONLINE ." vizitatori</p>";
 	$MOST_ONLINE_USERS = "<p>Cei mai multi utilizatori conectati ". $NUMAR_MTO .", ". date("j F Y") ."</p>";
 	
-	if($ONLINE_USERS != 0)
-	{
-		$ONLINE_USERS = '<p><a href="/memberlist.php?user=sRk7">sRk7.</a></p>';
-	}
-	
-	$FORUM_GROUPS = "Echipa: " . $FORUM_GROUPS_LIST;
+	$str = implode(', ', $FORUM_GROUPS_LIST);
+	$FORUM_GROUPS = "Echipa: " . $str;
 	
 	$REGISTER_DATA .= '<div id="signup">
 	<h3>Registration</h3>
