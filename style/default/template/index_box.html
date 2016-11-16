@@ -1,7 +1,8 @@
 <?php
 	include_once('./includes/connection.php');
+	$db = SCMSDB();
 	global $site_pages;
-	foreach ($SCMS_CONN->query('SELECT * FROM site_settings') as $row) {
+	foreach ($db->query('SELECT * FROM site_settings') as $row) {
 		$site_pages_2 = $row['site_title'];
 	}
 ?>
@@ -11,7 +12,7 @@
 </ul>
 <!-- BEGIN forum_list_wrap -->
 <div id="forum_rows">
-	<?php foreach ($SCMS_CONN->query('SELECT * FROM forums') as $forum_row) { ?>
+	<?php foreach ($db->query('SELECT * FROM forums') as $forum_row) { ?>
 		<table class="table" id="forum_<?=$forum_row['id']; ?>">
 			<tr>
 				<td class="row1over">

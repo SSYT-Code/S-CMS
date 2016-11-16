@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title><?=$site_settings['title'];?></title>
+		<link rel="stylesheet" type="text/css" href="style/default/style.css" />
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div id="header">
+			<div class="content">
+				<div id="logo">
+					<a href="<?=$site_settings['url'];?>">
+						<img src="<?=$site_settings['logo'];?>" alt="<?=$site_settings['title'];?>" />
+					</a>
+				</div>
+				
+				<ul class="main-pages">
+					<?=$site_pages;?>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="content" id="page_body">
+			<?php
+				// For register page
+				if(isset($_GET['action']) && $_GET['action'] == "sign_up") :
+					
+					echo REGISTER_DATA_FORM;
+				endif;
+				
+				// For login page
+				
+				if(isset($_GET['action']) && $_GET['action'] == "sign_in") :
+					// include(SCMS_DIR . '/includes/class/userClass.php');
+					// $userClass = new userClass();
+					
+					$errorMsgReg = '';
+					$errorMsgLogin = '';
+					
+					/* Login Form */
+					if (!empty($_POST['loginSubmit'])) 
+					{
+						$usernameEmail = $_POST['usernameEmail'];
+						$password = $_POST['password'];
+						if(strlen(trim($usernameEmail)) > 1 && strlen(trim($password)) > 1)
+						{
+							$uid = $user->userLogin($usernameEmail, $password);
+							if($uid)
+							{
+								$url = './';
+								header("Location: $url");
+							}
+							else
+							{
+								$errorMsgLogin = "Please check login details.";
+							}
+						}
+					}
+					echo LOGIN_DATA_FORM;
+				endif;
+				
+				if(!isset($_GET['action'])) :
+				
+					include_once(CMS_THEME_PATH . 'index_box.html');
+			?>
+			
+			<!-- BEGIN forum_statistics -->
+			<div class="forum_statistics">
+				<?=$TOTAL_LOGGED;?>
+				<?=$MOST_ONLINE_USERS;?>
+				<?=$ONLINE_USERS;?>
+				
+				<?=$FORUM_GROUPS;?>
+			</div>
+			<!-- END forum_statistics -->
+			<?php
+				endif;
+			?>
+		<?php include('overall_footer.html'); ?>
