@@ -1,0 +1,178 @@
+/*
+	# CSS
+*/
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    background: rgba(96, 125, 139, 0.28);
+    line-height: inherit;
+    font-family: serif, Arial;
+}
+
+div#header {
+    width: 100%;
+    height: 120px;
+    margin-bottom: 0;
+    background: #607D8B;
+    overflow: hidden;
+    display: block;
+}
+
+.content {
+    width: 90%;
+    margin: 0 auto;
+    padding: 5px;
+    overflow: hidden;
+}
+
+div#logo {
+    width: 50%;
+    clear: right;
+    float: left;
+    margin-top: 1.5%;
+}
+
+ul.main-pages {
+    float: right;
+    position: relative;
+    margin-top: 3.5%;
+    overflow: hidden;
+    padding: 5px;
+}
+
+ul.main-pages > li {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 15px;
+}
+
+ul.main-pages > li > a {
+    color: #3F51B5;
+    text-decoration: none;
+    padding: 5px 5px;
+    background: rgba(255, 255, 255, 0.88);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 4px 4px 2px 2px;
+}
+
+div#page_body {
+    background: #fff;
+    min-height: 500px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.21);
+}
+
+div#footer {
+    width: 100%;
+    height: 40px;
+}
+
+.forum_statistics {
+    overflow: hidden;
+    padding: 5px;
+    margin-bottom: -10px;
+}
+
+div#forum_rows {
+	min-height: 400px;
+}
+
+#forum_rows table {
+    width: 100%;
+    background: #f9f9f9;
+    padding: 4px;
+    border: 1px solid #ddd;
+}
+
+a {
+    text-decoration: none;
+}
+
+#forum_rows table tr td.row1over {
+    width: 60%;
+}
+
+#forum_rows table tr td.row1 {
+    width: 10%;
+}
+
+#forum_rows table tr td.row3over {
+    width: 20%;
+}
+
+p {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+}
+
+input#install_cms {
+    padding: 5px;
+    background: #607D8B;
+    color: white;
+    border: 1px solid #607D8B;
+}
+
+div#forum_title {
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    padding: 0 5px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    line-height: 10px;
+}
+
+ul {
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 10px;
+}
+
+div#page_body > ul li, div#page_body > ul li a {
+    display: inline-block;
+    margin-right: 5px;
+    color: #607D8B;
+}
+
+.post {
+    width: 100%;
+    display: block;
+    background: #effaff;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 2px;
+    padding: 0 5px;
+}
+
+.avatar {
+    text-align: center;
+    clear: right;
+    line-height: 20px;
+    word-wrap: break-word;
+}
+
+.rank {
+    text-align: center;
+    margin: 5px 0;
+    display: block;
+}
+
+div[id*="profile"] {
+    float: left;
+    width: 18%;
+    clear: left;
+    display: inline-block;
+    min-height: 250px;
+    border-right: 1px solid rgba(96, 125, 139, 0.33);
+}
+
+div#post_body {
+    float: left;
+    clear: none;
+    width: 70%;
+    display: block;
+    padding: 5px;
+    text-align: left;
+}
